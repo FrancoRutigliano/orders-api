@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"os/signal"
 
 	"github.com/FrancoRutiliano/orders-api/aplication"
 )
@@ -9,10 +12,13 @@ import (
 func main() {
 	app := aplication.New()
 
-	err := app.Start(context.TODO())
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	err := app.Start(ctx)
 
 	if err != nil {
-
+		fmt.Println("failed to connect to redis: %w", err)
 	}
 
 }
